@@ -1,0 +1,500 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.2, user-scalable=no" />
+
+  <title>ChronoDB</title>
+  <script src="
+https://cdn.jsdelivr.net/npm/luxon@3.3.0/build/global/luxon.min.js
+"></script>
+  <!-- <script src="/lib/vis.min.js"></script> -->
+  <link href="https://unpkg.com/vis/dist/vis.min.css" rel="stylesheet"/>
+  <link href="https://unpkg.com/vis/dist/vis-timeline-graph2d.min.css" rel="stylesheet"/>
+
+  <script type="text/javascript" src="https://unpkg.com/vis/dist/vis.min.js" rel="script"> </script>
+
+
+  <link href="styles/tabulator.min.css" rel="stylesheet">
+  <link href="styles/flexbin.css" rel="stylesheet">
+  <!-- <script src=
+"https://cdn.jsdelivr.net/npm/html2canvas@1.0.0-rc.5/dist/html2canvas.min.js">
+  </script> -->
+  <script type="text/javascript" src="lib/tabulator.min.js"></script>
+  <script src="https://unpkg.com/@popperjs/core@2"></script>
+  <script src="https://unpkg.com/tippy.js@6"></script>
+  <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+  <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+  <script src="lib/jquery-3.6.0.min.js"></script>
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+  <script type="module" src="https://cdn.jsdelivr.net/npm/emoji-picker-element@^1/index.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+  <link href="styles/index.css" rel="stylesheet"/>
+  <!-- https://quilljs.com/docs/quickstart/ -->
+  <!-- https://atomiks.github.io/tippyjs/v6/getting-started -->
+  <!-- https://unpkg.com/vis@0.5.1/docs/timeline.html -->
+  <!-- https://www.daterangepicker.com/ -->
+  <!-- https://www.cssscript.com/responsive-justified-photo-grid-layout-pure-css-flexbin-css/ -->
+</head>
+<style>
+  @font-face {
+    font-family: "nanumB";
+    src: url("./font/NanumSquareB.ttf");
+}  @font-face {
+    font-family: "nanumEB";
+    src: url("./font/NanumSquareEB.ttf");
+}
+</style>
+<body class="bg-light">
+  
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
+      <a class="navbar-brand view-nav" data-view="db" style="cursor: pointer;">ChronoDB</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+          
+          <li class="nav-item view-nav" data-view="table">
+            <a class="nav-link active">Table</a>
+          </li>
+          <li class="nav-item view-nav" data-view="timeline">
+            <a class="nav-link">Timeline</a>
+          </li>
+          <li class="nav-item view-nav" data-view="album">
+            <a class="nav-link">Album</a>
+          </li>
+          <li class="nav-item view-nav hide-on-local"  data-view="gallery">
+            <a class="nav-link">Gallery</a>
+          </li>
+          <li class="nav-item view-nav" data-view="board">
+            <a class="nav-link">Board</a>
+          </li>
+          <li class="nav-item view-nav"  data-view="blog">
+            <a class="nav-link">Blog</a>
+          </li>
+          <li class="nav-item view-nav"  data-view="list">
+            <a class="nav-link">List</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" onclick="openEdit()" title="create event"><img src="edit.svg"></a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" onclick="exportData()" title="Export data"><img src="download.svg"></a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+  <section id="section-databases" class="section container">
+      <div id="databases-container" class="list-group">
+        <!-- <a href="?db=1" class="list-group-item list-group-item-action flex-column align-items-start">
+          <div class="d-flex w-100 justify-content-between">
+            <h5 class="mb-1">List group item heading</h5>
+          </div>
+          <small>Donec id elit non mi porta.</small>
+        </a> -->
+      </div>
+
+      <div id="database-loading" class="list-group">
+        <div class=" w-100 database-loading-item loading-item">
+        </div>
+        <div class=" w-100 database-loading-item loading-item">
+        </div>
+        <div class=" w-100 database-loading-item loading-item">
+        </div>
+        <div class=" w-100 database-loading-item loading-item">
+        </div>
+      </div>
+      <div id="upload-data-section">
+        
+        <div class="inputitem">
+          <label for="nameinput" class="visually-hidden">Name</label>
+          <input type="text" class="form-control" id="database-name-input" placeholder="Name">
+        </div>
+        <div class="inputitem">
+          <label for="nameinput" class="visually-hidden">Description</label>
+          <input type="text" class="form-control" id="database-desc-input" placeholder="Description">
+        </div>
+        <label for="upload-data" id="upload-data-btn">import .json file</label>
+        <input type="file"  id="upload-data" accept="application/json" name="upload-data" class="hidden">
+        <br> <button class="btn btn-primary" id="submit-create-db">Create New</button>
+         <!-- <button class="btn btn-primary" id="submit-upload-data">Import</button> -->
+      </div>
+
+  </section>
+
+  <section id="section-timeline" class="hidden section">
+    <div id="timeline-container"></div>
+
+    <div id="timeline-loading" class="list-group">
+      <div class="row w-100">
+        <div class="col-1 timeline-loading-item loading-item" style="margin-left: 10%;">
+        </div>
+        <div class="col-1 timeline-loading-item loading-item" style="margin-left: 20%;">
+        </div>
+        <div class="col-1 timeline-loading-item loading-item" style="margin-left: 35%;">
+        </div>
+        <div class="col-1 timeline-loading-item loading-item" style="margin-left: 30%;">
+        </div>
+        <div class="col-1 timeline-loading-item loading-item" style="margin-left: 25%;">
+        </div>
+        <div class="col-1 timeline-loading-item loading-item" style="margin-left: 40%;">
+          
+        </div>
+        <div class="col-1 timeline-loading-item loading-item" style="margin-left: 5%;">
+        </div>
+        <div class="col-12 timeline-loading-item loading-item">
+        </div>
+        <div class="col-12 timeline-loading-item loading-item">
+        </div>
+        <div class="col-12 timeline-loading-item loading-item" style="height: 50px;">
+        </div>
+      </div>
+    </div>
+    <!-- <button id="saveimg">save as image</button> -->
+  </section>
+  <section id="section-table" class="hidden section">
+    <div id="table-container"></div>
+    <div id="table-loading" class="list-group">
+      <div class="row w-100">
+        <div class="col-4 table-loading-item loading-item">
+        </div>
+        <div class="col-4 table-loading-item loading-item">
+        </div>
+        <div class="col-4 table-loading-item loading-item">
+        </div>
+      </div>
+      <div class="row w-100">
+        <div class="col-4 table-loading-item loading-item">
+        </div>
+        <div class="col-4 table-loading-item loading-item">
+        </div>
+        <div class="col-4 table-loading-item loading-item">
+        </div>
+      </div><div class="row w-100">
+        <div class="col-4 table-loading-item loading-item">
+        </div>
+        <div class="col-4 table-loading-item loading-item">
+        </div>
+        <div class="col-4 table-loading-item loading-item">
+        </div>
+      </div><div class="row w-100 ">
+        <div class="col-4 table-loading-item loading-item">
+        </div>
+        <div class="col-4 table-loading-item loading-item">
+        </div>
+        <div class="col-4 table-loading-item loading-item">
+        </div>
+      </div>
+    </div>
+  </section>
+  <section id="section-album" class="hidden section container">
+    <div id="album-container">
+
+      <!-- <div class="album-item">
+        <div class="card-img-top">
+          <img src="./uploads/1687576019645.png" alt="image">
+        </div>
+        <div class="album-item-body invert-color">
+          <b class="album-item-name">Name</b><br>
+          <b class="album-item-date">2021-01-01</b>
+        </div>
+      </div>
+-->
+      <!-- <div class="album-item">
+        <div class="card-img-top noimage">
+        </div>
+        <div class="album-item-body">
+          <div class="album-item-body-color">
+          </div>
+          <div class="album-item-body-text">
+            <b class="album-item-name">Name</b><br>
+            <b class="album-item-date">2021-01-01</b>
+          </div>
+        </div>
+      </div>  -->
+
+
+    </div>
+    <div id="album-loading">
+      <div>
+        <div class="album-loading-item loading-item" style="height: 150px;">
+        </div>
+        <div class="album-loading-item loading-item" style="height: 35px;">
+        </div>
+      </div>
+
+      <div>
+        <div class="album-loading-item loading-item" style="height: 150px;">
+        </div>
+        <div class="album-loading-item loading-item" style="height: 35px;">
+        </div>
+      </div>
+
+      <div>
+        <div class="album-loading-item loading-item" style="height: 150px;">
+        </div>
+        <div class="album-loading-item loading-item" style="height: 35px;">
+        </div>
+      </div>
+
+      <div>
+        <div class="album-loading-item loading-item" style="height: 150px;">
+        </div>
+        <div class="album-loading-item loading-item" style="height: 35px;">
+        </div>
+      </div>
+
+      <div>
+        <div class="album-loading-item loading-item" style="height: 150px;">
+        </div>
+        <div class="album-loading-item loading-item" style="height: 35px;">
+        </div>
+      </div>
+
+      <div>
+        <div class="album-loading-item loading-item" style="height: 150px;">
+        </div>
+        <div class="album-loading-item loading-item" style="height: 35px;">
+        </div>
+      </div>
+    </div>
+  </section>  
+  <section id="section-board" class="hidden section container">
+    <div id="board-toolbar">
+      <div class="board-toolbar-section">
+        <img src="palette.png" class="groupby-btn active" data-val="color" title="group by color"> 
+        <img src="calendar.svg" class="groupby-btn" data-val="year" title="group by year"> 
+        <img src="star.png" class="groupby-btn" data-val="importance" title="group by importance"> 
+      </div>
+      <div class="board-toolbar-section">
+        <img src="order.svg" class="orderby-btn active" title="descending order" data-val='1'> 
+        <img src="order.svg" class="orderby-btn" style="transform: rotate(180deg);" title="ascending order" data-val='-1'> 
+      </div>
+    </div>
+    <div id="board-container">
+      <!-- <div class="board-area">
+        <div class="board-item">
+          <div class="board-item-content">
+            item
+          </div>
+          <div class="board-item-right">
+            <img class="board-item-importance" src="alert.svg">
+          </div>
+        </div>
+
+      </div> -->
+    </div>
+  </section>  
+
+  <section id="section-gallery" class="hidden section container">
+    <div id="gallery-container" class="flexbin flexbin-margin ">
+      <!-- <a><img src="uploads/1687575479360.png"></a> -->
+    </div>
+    <div id="gallery-loading">
+        <div class="loading-item" style="height: 200px;">
+        </div>
+        <div class="loading-item" style="height: 200px;">
+        </div>
+        <div class="loading-item" style="height: 200px;">
+        </div>
+        <div class=" loading-item" style="height: 200px;">
+        </div>
+        <div class="loading-item" style="height: 200px;">
+        </div>
+        <div class=" loading-item" style="height: 200px;">
+        </div>
+        <div class="loading-item" style="height: 200px;">
+        </div>
+        <div class="loading-item" style="height: 200px;">
+        </div>
+        <div class="loading-item" style="height: 200px;">
+        </div>
+        <div class=" loading-item" style="height: 200px;">
+        </div>
+        <div class="loading-item" style="height: 200px;">
+        </div>
+        <div class=" loading-item" style="height: 200px;">
+        </div>
+    </div>
+  </section>  
+
+  <section id="section-blog" class="hidden section container">
+    <div id="blog-container">
+      
+      <!-- <div class="blog-post">
+        <div class="blog-cover">
+          <b class="blog-cover-emoji">🎉</b>
+          <b class="blog-cover-stars"><img src="star.png"><img src="star.png"><img src="star.png"><img src="star.png"><img src="star.png"></b>
+        </div>
+        <div class="blog-header" >
+          <h1>Title</h1>
+          <b class="blog-header-date">2011-01-01</b>
+          <hr>
+          <div class="blog-header-btns">
+            <img src="edit.svg">
+            <img src="trash.svg">
+          </div>
+        </div>
+
+
+        
+      </div> -->
+    </div>
+
+    <div id="blog-loading">
+      <div>
+        <div class="album-loading-item loading-item" style="height: 150px;">
+        </div>
+        <div class="album-loading-item loading-item" style="height: 35px;">
+        </div>
+      </div>
+    </div>
+  </section>
+  <section id="section-list" class="hidden section container">
+    <div id="list-container">
+
+    </div>
+    <div id="list-loading">
+
+    </div>
+  </section>
+  
+  <div id="emojiwindow" class="hidden">
+    <img src="x.svg" id="close-emoji" class="emoji-window-btn"> 
+    <img src="trash.svg" id="remove-emoji" class="emoji-window-btn"> 
+    <img src="shuffle.svg" id="shuffle-emoji" class="emoji-window-btn"> 
+    <div class="emoji-window-btn"  id="preview-emoji"><img src="smile.svg"></div>
+    <br>
+    <emoji-picker></emoji-picker>
+  </div>
+
+<div id="postwindow" class="hidden">
+
+
+</div>
+
+
+  <div id="editwindow" class="hidden">
+    <section id="section-input" class="container">
+      <br>
+      
+      <div class="inputitem" style="display: inline;">
+        <button id="pickemoji"><img src="smile.svg"></button>
+      </div>
+      <h2 style="text-align: center;display: inline;font-family: 'nanumEB';" >Add Event</h2>
+      
+        <div class="row">
+          
+          <div class="inputitem">
+            <label for="nameinput" class="visually-hidden">Name</label>
+            <input type="text" class="form-control" id="nameinput" placeholder="Name">
+          </div>
+          <select class="form-select inputitem" id="typeinput" aria-label="Default select example">
+            <option disabled>Select type</option>
+            <option id="type-event" value="1"selected>Event</option>
+            <option id="type-period" value="2">Period</option>
+          </select>
+  
+          <div class="dropdown inputitem">
+            <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+              <span class="color-selection-span" id="color-selection-current" style="background:white;margin: 1px;"></span>select color
+            </button>
+            <div  class="dropdown-menu">
+              <div  id="color-selection"></div>
+            </div>
+            <!-- <ul class="dropdown-menu" id="color-selection">
+              <li class="dropdown-item color-item">23</li>
+            </ul> -->
+          </div>
+          
+          <div class="inputitem hide-on-local" >
+            <input type="file"  id="input-image" class="form-control" accept="image/png,image/jpg,image/jpeg" name="img">
+
+            <!-- <input class="form-control" type="file" id="formFile"> -->
+          </div>
+          <div class="inputitem">
+  
+            <label for="start">Start date:</label>
+            <input name="date" id="startinput"
+                   min="0000-01-01" max="2999-12-31">
+          </div>
+          <div class="inputitem">
+  
+            <label for="start">End date:</label>
+            <input name="date" id="endinput"
+                   min="0000-01-01" max="2999-12-31">
+          </div>
+          
+        </div>
+  
+        <div class="form-check inputitem hide-on-local" >
+          <input class="form-check-input" type="checkbox" value="" id="useemoji" checked>
+          <label class="form-check-label" for="useemoji">
+            Use emoji thumbnail
+          </label>
+        </div>
+        <div class="inputitem" style="width: 200px;"> 
+          <label for="importance" id="importance-label" class="form-label">Importance:5</label>
+          <input type="range" id="importance-range" class="form-range" min="1" max="10"  id="importance" value="5">
+          
+        </div>
+        <div class="row">
+          <div id="tagarea" class="col-12 col-md-4">
+            <!-- <div class="tag-selection selected"><img src="check.png">tag1</div>
+            <div class="tag-selection"><img src="check.png">tag2</div>
+            <div class="tag-selection selected"><img src="check.png">tag3</div> -->
+          </div>
+          <label id="thumbnail" class="col-12 col-md-6" for="input-image">
+            <!-- <img src="uploads/test.png"> -->
+          </label>
+          
+        </div>
+        <div id="editor-container" class="col-auto">
+  
+          <div id="editor">
+            
+          </div>
+        </div>
+  
+        <div class="row">
+          <div class="col-auto">
+            <button class="btn btn-primary" id="submit-event-edit">Confirm edit</button>
+            <button class="btn btn-primary" id="submit-event">Create</button>
+            <button class="btn btn-secondary" id="cancel-event">Cancel</button>
+          </div>
+        </div>
+        <br>
+        <br>
+  
+  
+  
+    </section>
+  </div>
+  <div id="shadow" class="hidden"></div>
+  <div id="shadow-post" class="hidden"></div>
+</body>
+<script src="js/util.js"></script>
+
+<script src="js/localDatabase.js"></script>
+<script src="js/ajax.js"></script>
+<script src="js/index.js"></script>
+<!-- <script src="./js/example.js"></script> -->
+<script src="js/emoji.js"></script>
+<script src="js/colors.js"></script>
+<script src="js/init.js"></script>
+
+<script src="js/table.js"></script>
+<script src="js/timeline.js"></script>
+<script src="js/album.js"></script>
+<script src="js/gallery.js"></script>
+<script src="js/blog.js"></script>
+<script src="js/list.js"></script>
+<script src="js/board.js"></script>
+
+
+</html>
