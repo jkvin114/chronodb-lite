@@ -154,9 +154,10 @@ class LocalDatabase {
 			$("#database-loading").hide()
 
 			let list = await getIdxedDBValues("eventdb")
-
 			let html = ""
 			for (const item of list) {
+				localStorage.setItem(item.counter+"_name",item.name)
+				localStorage.setItem(item.counter+"_desc",item.desc)
 				html += getDBListItem(item.counter, item.name, item.desc, item.count)
 			}
 			$("#databases-container").html(html)

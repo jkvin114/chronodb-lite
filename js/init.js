@@ -79,8 +79,9 @@ $("document").ready(function () {
 		},
 	})
 
-	
-	
+	$("#post-close-btn").click(closePost)
+	$("#edit-close-btn").click(closeEdit)
+
 	document.querySelector("emoji-picker").addEventListener("emoji-click", (event) => {
 		$("#pickemoji").html(event.detail.unicode)
 		$("#pickemoji").data("emoji", event.detail.unicode)

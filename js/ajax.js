@@ -14,6 +14,9 @@ class ServerConnection{
 			for (let i = 0; i < data.items.length; ++i) {
 				str += getDBListItem(data.items[i].counter,
 					data.items[i].title,data.items[i].desc,data.counts[i])
+
+				localStorage.setItem(data.items[i].counter+"_name",data.items[i].title)
+				localStorage.setItem(data.items[i].counter+"_desc",data.items[i].desc)
 			}
 			$("#databases-container").html(str)
 			$("#database-loading").hide()
@@ -49,7 +52,7 @@ class ServerConnection{
 		if (DB.isRecent) return
 		try {
 			DB.setData((await (await fetch("/db/" + DB.id + "/events")).json()).items)
-	
+			
 			DB.isRecent = true
 		} catch (e) {
 			alert("Error!")

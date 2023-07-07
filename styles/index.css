@@ -931,9 +931,22 @@ emoji-picker{
     background-color: white;
 }
 #upload-data-btn{
-    background-color: #1b78c5;
     color: white;
     padding: 5px;
     border-radius: 5px;
-
+    
 cursor: pointer;}
+#upload-data-btn img{
+    width: 30px;
+}
+
+#post-close-btn,#edit-close-btn{
+    font-size: 40px;
+    position: absolute;
+    right: 0;
+    top:0;
+    line-height: 40px;
+    z-index: 10000;
+    margin-right: 10px;
+    cursor: pointer;
+}

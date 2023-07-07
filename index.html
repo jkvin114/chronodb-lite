@@ -51,7 +51,7 @@ https://cdn.jsdelivr.net/npm/luxon@3.3.0/build/global/luxon.min.js
   
   <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container-fluid">
-      <a class="navbar-brand view-nav" data-view="db" style="cursor: pointer;"  href="index.html">ChronoDB</a>
+      <a class="navbar-brand view-nav" data-view="db" style="cursor: pointer;" href="index.html">ChronoDB</a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
@@ -119,7 +119,7 @@ https://cdn.jsdelivr.net/npm/luxon@3.3.0/build/global/luxon.min.js
           <label for="nameinput" class="visually-hidden">Description</label>
           <input type="text" class="form-control" id="database-desc-input" placeholder="Description">
         </div>
-        <label for="upload-data" id="upload-data-btn">import .json file</label>
+        <label for="upload-data" id="upload-data-btn" title="import from file"><img src="download.svg" style="transform: rotate(180deg);"></label>
         <input type="file"  id="upload-data" accept="application/json" name="upload-data" class="hidden">
         <br> <button class="btn btn-primary" id="submit-create-db">Create New</button>
          <!-- <button class="btn btn-primary" id="submit-upload-data">Import</button> -->
@@ -374,12 +374,15 @@ https://cdn.jsdelivr.net/npm/luxon@3.3.0/build/global/luxon.min.js
   </div>
 
 <div id="postwindow" class="hidden">
+  <b id="post-close-btn">&times;</b>
+  <div id="postwindow-content">
 
-
+  </div>
 </div>
 
 
   <div id="editwindow" class="hidden">
+    <b id="edit-close-btn">&times;</b>
     <section id="section-input" class="container">
       <br>
       
@@ -444,11 +447,11 @@ https://cdn.jsdelivr.net/npm/luxon@3.3.0/build/global/luxon.min.js
           
         </div>
         <div class="row">
-          <div id="tagarea" class="col-12 col-md-4">
+          <!-- <div id="tagarea" class="col-12 col-md-4"> -->
             <!-- <div class="tag-selection selected"><img src="check.png">tag1</div>
             <div class="tag-selection"><img src="check.png">tag2</div>
             <div class="tag-selection selected"><img src="check.png">tag3</div> -->
-          </div>
+          <!-- </div> -->
           <label id="thumbnail" class="col-12 col-md-6" for="input-image">
             <!-- <img src="uploads/test.png"> -->
           </label>

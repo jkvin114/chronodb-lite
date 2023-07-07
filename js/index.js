@@ -19,8 +19,7 @@ class Database {
 		this.id = 1
 		this.tags = new Map() // id=>tag
 		this.view = VIEW.Table
-		this.name = ""
-		this.desc = ""
+		this.dbData = new Map() //dbid => name,desc
 	}
 	setData(data) {
 		this.data = data.sort((a, b) => {
@@ -35,6 +34,12 @@ class Database {
 			this.tags.set(d.id, d)
 		}
 	}
+	setDBData(id, name, desc) {
+		this.dbData.set(String(id), { name: name, desc: desc })
+	}
+	thisDBData() {
+		return this.dbData.get(this.id)
+	}
 
 	reload() {
 		$("#nameinput").val(null)
@@ -47,22 +52,27 @@ var quill
 const DatabaseStub = Database.IsLocal ? new LocalDatabase() : new ServerConnection()
 function exportData() {
 	// let data=JSON.stringify()
-	downloadObjectAsJson({ items: DB.data }, "database_" + DB.id)
+	const name=localStorage.getItem(DB.id+"_name")
+	const desc=localStorage.getItem(DB.id+"_desc")
+	downloadObjectAsJson(
+		{ 
+			items: DB.data, 
+			name: (name ? name : "database_" + DB.id), 
+			desc: (desc ? desc : "" )
+		},
+		"database_" + DB.id
+	)
 }
 async function uploadData(data) {
-	const items = JSON.parse(data).items
+	const dbdata=JSON.parse(data)
+	const items = dbdata.items
 	DB.id = hexId()
 	try {
 		if (!items || items.length == 0 || items[0].eventstart == null) {
 			alert("invalid format")
 			return
 		}
-		if(!$("#database-name-input").val()){
-			alert("choose a name for database")
-			return
-		}
-		await DatabaseStub.addDatabase(DB.id, $("#database-name-input").val()
-		, $("#database-desc-input").val())
+		await DatabaseStub.addDatabase(DB.id, dbdata.name,dbdata.desc)
 		await DatabaseStub.createManyEventRequest(null, items)
 		alert("import complete!")
 		DatabaseStub.dbList()
@@ -70,13 +80,12 @@ async function uploadData(data) {
 		alert("import failed" + e)
 	}
 }
-async function createDatabase(){
-	if(!$("#database-name-input").val()){
+async function createDatabase() {
+	if (!$("#database-name-input").val()) {
 		alert("choose a name for database")
 		return
 	}
-	await DatabaseStub.addDatabase(DB.id, $("#database-name-input").val()
-	, $("#database-desc-input").val())
+	await DatabaseStub.addDatabase(DB.id, $("#database-name-input").val(), $("#database-desc-input").val())
 	DatabaseStub.dbList()
 }
 
@@ -95,7 +104,7 @@ function openPost(id) {
 	$("#shadow-post").removeClass("hidden")
 	$("body").css("overflow", "hidden")
 	let html = getBlogPost(DB.datamap.get(id), "post")
-	$("#postwindow").html(html)
+	$("#postwindow-content").html(html)
 	populatePostContent(DB.datamap.get(id), "post")
 	addPostBtnEvent()
 }
