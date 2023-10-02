@@ -1,18 +1,4 @@
 
-function tagHtml(id){
-	const tag=DB.tags.get(Number(id))
-	if(!tag) return ""
-	return `<div class='tag-selection selected' style="background-color:${
-		COLORS_LIGHT[Number(tag.color)]
-	};">${tag.name}</div>`
-}
-function allTags(tags){
-	let html=""
-	for(const t of tags.split(",")){
-		html+=tagHtml(t)
-	}
-	return "<div>"+html+"</div>"
-}
 async function Table() {
 	DB.view = VIEW.Table
 	$("#table-container").html("")
@@ -27,7 +13,7 @@ async function Table() {
 	let tabledata = []
 	for (const item of DB.data) {
 		let emoji = item.emoji ? item.emoji : ""
-		let t=allTags("2,1,0")
+		let t=allTags(item.tags)
 
 		let name=`<b class='table-name' data-id=${item.counter}>${emoji + " " + item.eventname}</b>`
 		tabledata.push({

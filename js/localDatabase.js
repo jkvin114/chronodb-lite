@@ -39,8 +39,9 @@ function addToListToIdxedDB(storename, list) {
 		const objStore = tran.objectStore(storename)
 
 		for (const item of list) {
+			//console.log(item)
 			const request = objStore.add(item) // 저장
-			request.onsuccess = (e) => console.log(e.target.result)
+		//	request.onsuccess = (e) => console.log(e.target.result)
 		}
 	}
 }
@@ -165,13 +166,26 @@ class LocalDatabase {
 		})
 	}
 
+	async hasExampleDB(){
+		return new Promise(async (resolve, reject) => {
+
+			let list = await getIdxedDBValues("eventdb")
+			for (const item of list) {
+				if(item.counter === "18af1c9319e") resolve(true)
+			}
+			resolve(false)
+		})
+	}
+
     async addDatabase(id,name,desc,count){
         if(!count) count=0
+		console.log(id)
         return new Promise(async (resolve, reject) => {
 			try {
                 await addToListToIdxedDB("eventdb",[{name:name,desc:desc,count:count,counter:id}])
 				resolve()
 			} catch (e) {
+				console.log(e)
 				alert(e)
 				reject()
 			}
@@ -236,7 +250,7 @@ class LocalDatabase {
         eventObj.counter=hexId()
         eventObj.dbid=DB.id
         return new Promise(async (resolve, reject) => {
-			try {
+			try {	
                 DB.isRecent=false
                 await addToListToIdxedDB("event",[eventObj])
                 DB.reload()

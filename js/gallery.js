@@ -31,7 +31,7 @@ async function Gallery() {
 	let html=""
 	for (const item of DB.data) {
         if(item.thumbnail!=null){
-            html+=`<a class=gallery-item data-src='uploads/${item.thumbnail}' data-name='${item.eventname}'><img  src="uploads/${item.thumbnail}"></a>`
+            html+=`<a class=gallery-item data-src='${getImgSrc(item.thumbnail)}' data-name='${item.eventname}'><img  src="${getImgSrc(item.thumbnail)}"></a>`
         }
     }
     $("#gallery-container").html(html)

@@ -29,7 +29,7 @@ async function ListView(){
         else{
             let month=item.eventstart.slice(5,7)
             if(month!==currmonth){
-                html+=`<b>${MONTHS_KOR[Number(month)-1]}</b>`
+                html+=`<b>${MONTHS[Number(month)-1]}</b>`
                 currmonth=month
             }
             if(item.eventend){

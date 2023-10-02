@@ -1,6 +1,6 @@
 function isEmpty(text){
     // console.log(text)
-    if(typeof(text)!=="string") return false
+    if(typeof(text)!=="string") return true
     if(!text) return true
     return text.replace(/\s/g, '').length===0
 }
@@ -17,6 +17,12 @@ function getYear(item){
 function hexId(){
     return Math.floor(Date.now()+Math.random()*1000000).toString(16).padEnd(10, "0")
 }
+function getMidTime(item){
+    if(!item.eventend)
+        return new Date(item.eventstart).valueOf()
+
+    return (new Date(item.eventstart).valueOf() + new Date(item.eventend).valueOf())/2
+}
 
 function getDBListItem(id,title,description,count){
     return `
@@ -27,7 +33,7 @@ function getDBListItem(id,title,description,count){
         </div>
         <small>${description}</small>
       </a>`
-}  
+}
 
 function downloadObjectAsJson(exportObj, exportName){
     var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(exportObj));
@@ -38,3 +44,27 @@ function downloadObjectAsJson(exportObj, exportName){
     downloadAnchorNode.click();
     downloadAnchorNode.remove();
   }
+
+  
+function tagHtml(id){
+	const tag=DB.tags.get(Number(id))
+	if(!tag) return ""
+	return `<div class='tag-selection selected' style="background-color:${
+		COLORS_MID[Number(tag.color)]
+	};">${tag.name}</div>`
+}
+function allTags(tags){
+	let html=""
+	for(const t of tags){
+		html+=tagHtml(t)
+	}
+	return "<div>"+html+"</div>"
+}
+
+function isImageRemote(imageurl){
+    return (imageurl.slice(0,4) === "http" || imageurl.slice(0,4) === "data")
+}
+function getImgSrc(image){
+    let src=isImageRemote(image) ? image : `./uploads/${image}`
+    return src
+}

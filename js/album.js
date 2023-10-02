@@ -9,11 +9,13 @@ async function Album() {
 	let html=""
 	for (const item of DB.data) {
 
-        html+=`<div class="album-item" data-id=${item.counter}>`
-        if(item.thumbnail && !Database.IsLocal){
+        html+=`<div class="album-item" data-id=${item.counter}>
+        <div class="album-tag">${allTags(item.tags)}</div>`
+        if(item.thumbnail){
+            // let src=isImageRemote(item.thumbnail) ? item.thumbnail : `./uploads/${item.thumbnail}`
             html+=`
             <div class="card-img-top">
-                <img class="card-thumbnail" src="./uploads/${item.thumbnail}" alt="image">
+                <img class="card-thumbnail" src="${getImgSrc(item.thumbnail)}" alt="image">
             </div>`
         }
         else{

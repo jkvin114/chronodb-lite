@@ -1,5 +1,5 @@
 body, html {
-    font-family:"nanumB";
+    font-family:"Pretendard";
   }
   .vis-timeline .vis-item.range, .vis-timeline .vis-item.box{
     overflow: visible;
@@ -185,7 +185,7 @@ background-color: red;
 }
 .event{
     padding: 5px;
-    font-family:"nanumB";
+    font-family:"Pretendard";
     font-size: 0.6em;
 }
 .event.event-moment{
@@ -220,7 +220,8 @@ background-color: red;
 }
 
 .event.imp-7,.event.imp-8,.event.imp-9,.event.imp-10{
-    font-family: "nanumEB";
+    font-family: "Pretendard";
+    font-weight: bold;
 }
 .imp-7,.imp-8{
     font-size: 0.75em;
@@ -422,6 +423,15 @@ border-bottom: 1px solid #bebebe;
     max-width: 300px;
     margin: 10px;
     display: inline-block;
+    margin-right: 20px;
+    margin-left: 20px;
+}
+.input-container{
+    align-items: center;
+    justify-content: center;
+}
+.input-container .inputitem{
+    text-align: center;
 }
 #shadow,#shadow-post{
     background: rgba(150,150,150,0.4);
@@ -484,13 +494,13 @@ border-bottom: 1px solid #bebebe;
     border: 1px solid gray;
     vertical-align: middle;
 }
-#color-selection{
+#color-selection,#tag-color-selection{
     display: flex;
     max-width: 250px;
     flex-wrap: wrap;
     justify-content: center;
 }
-#color-selection .color-item{
+#color-selection .color-item,#tag-color-selection .color-item{
     /* margin: 4px; */
     padding: 0;
     width: min-content;
@@ -507,23 +517,25 @@ border-bottom: 1px solid #bebebe;
     flex-direction: row;
     /* padding-top: 10px; */
     align-content: center;  
+    justify-content: center;
 }
 #thumbnail{
     margin: 4px;
-    max-height: 120px;
-    max-width: 250px;
+    
     overflow: auto;
     cursor: pointer;
 }
 #thumbnail > img{
     /* width: 100%; */
     height: 100%;
+    max-height: 350px;
+    max-width: 350px;
 }
 
 .tag-selection{
     font-size: 13px;
-    border-radius: 5px;
-    border: 1px solid #969696;
+    border-radius: 2px;
+    /* border: 1px solid #969696; */
     display: inline;
     height: 27px;
     margin: 5px;
@@ -531,6 +543,7 @@ border-bottom: 1px solid #bebebe;
     background-color: white;
     color: #575757;
     padding: 2px;
+    line-height: 24px;
 }
 .tag-selection > img{
     height: 15px;
@@ -545,6 +558,15 @@ border-bottom: 1px solid #bebebe;
 .tag-selection.selected{
     color: #2a2a2a;
 
+}
+.album-tag{
+    position: absolute;
+    top:5px;
+    left:5px;
+    z-index: 3;
+}
+.album-tag .tag-selection{
+    box-shadow:rgba(85, 85, 85,0.5) 0px 0px 3px 1px;
 }
 #editor{
     height: 250px;
@@ -609,6 +631,7 @@ emoji-picker{
     margin: 5px;
     cursor: pointer;
     transition: all 0.2s;
+    position: relative;
     /* flex-grow: 1; */
 }
 .album-item:hover{
@@ -623,7 +646,7 @@ emoji-picker{
     min-height: 100px;
 }
 .album-item .card-img-top.noimage{
-    padding: 10px;
+    padding: 40px;
     overflow:hidden;
 }
 .noimage li{
@@ -658,7 +681,8 @@ emoji-picker{
 .album-item-name{
     font-size: 14px;
     padding-left: 5px;
-    font-family: "nanumEB";
+    font-family: "Pretendard";
+    font-weight: bold;
 }
 .album-item-date{
     font-size: 11px;
@@ -784,7 +808,7 @@ emoji-picker{
     transform: scale(1.1);
 }
 
-#postwindow{
+#postwindow,#tagwindow{
     position: fixed;
     top: 50%;
     left: 50%;
@@ -822,13 +846,23 @@ emoji-picker{
     z-index: 3;
     position: relative;
 
-    font-family: "nanumEB";
+    font-family: "Pretendard";
+    font-weight: bold;
+    cursor: pointer;
 }
 .board-area-header b{
     float: right;
     font-size: 0.8rem;
     color: #3f3f3f;
     padding-right: 20px;
+}
+.board-area-header a{
+    float: left;
+    font-size: 0.8rem;
+    color: #3f3f3f;
+    padding-right: 10px;
+    padding-left: -10px;
+    display: none;
 }
 .board-area-content{
     padding: 15px;
@@ -940,7 +974,7 @@ cursor: pointer;}
     width: 30px;
 }
 
-#post-close-btn,#edit-close-btn{
+#post-close-btn,#edit-close-btn,#tag-close-btn{
     font-size: 40px;
     position: absolute;
     right: 0;
@@ -949,4 +983,13 @@ cursor: pointer;}
     z-index: 10000;
     margin-right: 10px;
     cursor: pointer;
+}
+#tagwindow{
+    text-align: center;
+    padding: 20px;
+}
+#tagwindow-tags{
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }

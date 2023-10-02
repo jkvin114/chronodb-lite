@@ -6,6 +6,7 @@ const VIEW = {
 	Blog: "blog",
 	Gallery: "gallery",
 	List: "list",
+	Trend:"trend"
 }
 
 class Database {
@@ -20,18 +21,27 @@ class Database {
 		this.tags = new Map() // id=>tag
 		this.view = VIEW.Table
 		this.dbData = new Map() //dbid => name,desc
+		this.currentEditingEvent=-1
 	}
+	
 	setData(data) {
 		this.data = data.sort((a, b) => {
 			return new Date(b.eventstart).valueOf() - new Date(a.eventstart).valueOf()
 		})
 		for (const d of data) {
+			d.tags=new Set()
 			this.datamap.set(d.counter, d)
 		}
 	}
-	setTags(tags) {
-		for (const d of tags) {
-			this.tags.set(d.id, d)
+	setTags(tagdata) {
+		console.log(tagdata)
+		for (const d of tagdata.items) {
+			this.tags.set(d.counter, d)
+		}
+		for (const d of tagdata.eventtags) {
+			let event=this.datamap.get(d.event)
+			if(event)
+				event.tags.add(d.tag)
 		}
 	}
 	setDBData(id, name, desc) {
@@ -60,21 +70,26 @@ function exportData() {
 			name: (name ? name : "database_" + DB.id), 
 			desc: (desc ? desc : "" )
 		},
-		"database_" + DB.id
+		"database_" +(name ? name :DB.id)
 	)
 }
 async function uploadData(data) {
 	const dbdata=JSON.parse(data)
 	const items = dbdata.items
 	DB.id = hexId()
+	console.log(data.dbid)
+	if(items[0].dbid==="18af1c9319e") DB.id=items[0].dbid
+
 	try {
 		if (!items || items.length == 0 || items[0].eventstart == null) {
 			alert("invalid format")
 			return
 		}
+		
 		await DatabaseStub.addDatabase(DB.id, dbdata.name,dbdata.desc)
 		await DatabaseStub.createManyEventRequest(null, items)
-		alert("import complete!")
+		if(items[0].dbid!=="18af1c9319e")
+			alert("import complete!")
 		DatabaseStub.dbList()
 	} catch (e) {
 		alert("import failed" + e)
@@ -85,7 +100,9 @@ async function createDatabase() {
 		alert("choose a name for database")
 		return
 	}
-	await DatabaseStub.addDatabase(DB.id, $("#database-name-input").val(), $("#database-desc-input").val())
+	// if(DB.id===-1) DB.id = 
+	console.log($("#database-name-input").val())
+	await DatabaseStub.addDatabase(hexId(), $("#database-name-input").val(), $("#database-desc-input").val())
 	DatabaseStub.dbList()
 }
 
@@ -121,10 +138,12 @@ function openEdit(id) {
 	$("#preview-emoji").html("")
 
 	if (id !== undefined) {
+		DB.currentEditingEvent=id
 		$("#editwindow h2").html("Edit Event")
 		$("#submit-event-edit").show()
 		$("#submit-event-edit").data("id", id)
 		$("#submit-event").hide()
+		$("#tagarea-container").show()
 		$("#endinput").val(null)
 
 		const data = DB.datamap.get(id)
@@ -150,7 +169,11 @@ function openEdit(id) {
 			quill.setContents(data.eventdesc)
 		}
 		if (data.thumbnail) {
-			$("#thumbnail").html("<img src='./uploads/" + data.thumbnail + "'>")
+			if(isImageRemote(data.thumbnail)) {
+				$("#image-url-input").val(data.thumbnail)
+				$("#thumbnail").html("<img src='" + data.thumbnail + "'>")
+		}
+			else $("#thumbnail").html("<img src='./uploads/" + data.thumbnail + "'>")
 		}
 		$("#useemoji").prop("checked", data.emojiThumbnail === 1)
 		if (data.isPeriod) {
@@ -160,10 +183,21 @@ function openEdit(id) {
 			$("#type-period").prop("selected", false)
 			$("#type-event").prop("selected", true)
 		}
+		$(".tag-selection-editable").removeClass("selected")
+		console.log(data.tags)
+		for(const tag of data.tags){
+			const tagobj=DB.tags.get(tag)
+			$("#eventtag_"+tag).addClass("selected")
+			$("#eventtag_"+tag).css("background", COLORS_MID[Number(tagobj.color)])
+		}
+
 	} else {
+		DB.currentEditingEvent=-1
+
 		$("#submit-event-edit").hide()
 		$("#submit-event").show()
 		$("#editwindow h2").html("Add New Event")
+		$("#tagarea-container").hide()
 	}
 	$("#editwindow").removeClass("hidden")
 	$("#shadow").removeClass("hidden")
@@ -205,6 +239,9 @@ function changeView(view) {
 		case "list":
 			ListView()
 			break
+		case "trend":
+			TrendView()
+			break
 	}
 }
 
@@ -237,6 +274,7 @@ async function createEvent(id) {
 		isPeriod: end && type === "2" ? 1 : 0,
 		emojiThumbnail: emojithumb ? 1 : 0,
 		tags: "",
+		thumbnail:null
 	}
 
 	if (event.eventname === "") {
@@ -271,14 +309,28 @@ async function createEvent(id) {
 	formdata.append("color", event.color)
 	formdata.append("isPeriod", event.isPeriod)
 	formdata.append("emojiThumbnail", event.emojiThumbnail)
-	formdata.append("tags", event.tags)
+	formdata.append("tags", "")
 
 	if (!Database.IsLocal) {
 		const image = $("#input-image")[0].files[0]
 		// console.log(image)
+		let img=DB.datamap.get(id).thumbnail
+		if($("#image-url-input").val())
+			img = $("#image-url-input").val()
+
 		if (image) formdata.append("img", image)
-		else if (id !== undefined && DB.datamap.get(id).thumbnail) {
-			formdata.append("thumbnail", DB.datamap.get(id).thumbnail)
+		else if (img) {
+			formdata.append("thumbnail", img)
+		}
+	}
+	else{
+		let img=id?DB.datamap.get(id).thumbnail:""
+		if($("#image-url-input").val())
+			img = $("#image-url-input").val()
+		if (img) {
+			// console.log(img)/
+			event.thumbnail=img
+			formdata.append("thumbnail",img)
 		}
 	}
 
@@ -294,25 +346,49 @@ async function createEvent(id) {
 function drawTags() {
 	let html = ""
 	for (const tag of DB.tags.values()) {
-		html += `<div class="tag-selection" data-id=${tag.id} data-color=${tag.color} style="background-color:${
+		html += `<div class="tag-selection tag-selection-editable" data-id=${tag.counter} id="eventtag_${tag.counter}" data-color=${tag.color} style="background-color:${
 			COLORS_LIGHT[tag.color]
 		};">
         <img src="check.png">${tag.name}</div>`
 	}
 	$("#tagarea").html(html)
-	$(".tag-selection").click(function () {
+	$(".tag-selection-editable").click(function () {
 		if (!$(this).data("id") || !$(this).data("color")) return
 
 		if ($(this).hasClass("selected")) {
 			$(this).css("background", COLORS_LIGHT[Number($(this).data("color"))])
 			$(this).removeClass("selected")
+			if(DB.currentEditingEvent!==-1)
+				DatabaseStub.setEventTag(DB.currentEditingEvent,$(this).data("id"),false)
 		} else {
 			$(this).addClass("selected")
 			$(this).css("background", COLORS_MID[Number($(this).data("color"))])
+			if(DB.currentEditingEvent!==-1)
+				DatabaseStub.setEventTag(DB.currentEditingEvent,$(this).data("id"),true)
 		}
 	})
 }
 function convertDate(date) {
 	date = date.split("T")[0]
 	return date.split("-")[2] + "/" + date.split("-")[1] + "/" + date.split("-")[0]
+}
+function openEditTag(){
+	$("#tagwindow").removeClass("hidden")
+	$("#shadow-post").removeClass("hidden")
+	let html = ""
+	for (const tag of DB.tags.values()) {
+		html += `<div class="tag-selection" data-id=${tag.counter} data-color=${tag.color} style="background-color:${
+			COLORS_MID[tag.color]
+		};">
+        ${tag.name}</div>`
+	}
+	$("#tagwindow-tags").html(html)
+	$("#create-tag-btn").off()
+	$("#create-tag-btn").click(async function(){
+		let name=$("#tagnameinput").val()
+		const color = $("#tag-color-selection").data("color")
+		await DatabaseStub.addTag(name,color)
+		await DatabaseStub.loadTags()
+		openEditTag()
+	})
 }

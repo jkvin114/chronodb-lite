@@ -36,7 +36,7 @@ function item_period(content, id, colorId, imp, icon) {
 	)
 }
 function addimg(img) {
-	return `<img class=eventimg src="./uploads/${img}">`
+	return `<img class=eventimg src="${img}">`
 }
 function addemoji(emoji) {
 	//129424
@@ -129,7 +129,7 @@ async function Timeline() {
 		if (item.eventend && item.isPeriod) {
 			let content = item_period(item.eventname, item.counter, item.color, item.importance)
 			if (item.thumbnail && item.emojiThumbnail === 0) {
-				content = item_period(item.eventname, item.counter, item.color, item.importance, addimg(item.thumbnail))
+				content = item_period(item.eventname, item.counter, item.color, item.importance, addimg(getImgSrc(item.thumbnail)))
 			} else if (item.emoji && item.emoji !== "undefined") {
 				content = item_period(item.eventname, item.counter, item.color, item.importance, addemoji(item.emoji))
 			}
@@ -146,7 +146,7 @@ async function Timeline() {
 		} else if (item.eventend) {
 			let content = item_range(item.eventname, item.counter, item.color, item.importance)
 			if (item.thumbnail && item.emojiThumbnail === 0) {
-				content = item_range(item.eventname, item.counter, item.color, item.importance, addimg(item.thumbnail))
+				content = item_range(item.eventname, item.counter, item.color, item.importance, addimg(getImgSrc(item.thumbnail)))
 			} else if (item.emoji && item.emoji !== "undefined") {
 				content = item_range(item.eventname, item.counter, item.color, item.importance, addemoji(item.emoji))
 			}
@@ -162,7 +162,7 @@ async function Timeline() {
 		} else {
 			let content = item_moment(item.eventname, item.counter, item.color, item.importance)
 			if (item.thumbnail && item.emojiThumbnail === 0) {
-				content = item_moment(item.eventname, item.counter, item.color, item.importance, addimg(item.thumbnail))
+				content = item_moment(item.eventname, item.counter, item.color, item.importance, addimg(getImgSrc(item.thumbnail)))
 			} else if (item.emoji && item.emoji !== "undefined") {
 				content = item_moment(item.eventname, item.counter, item.color, item.importance, addemoji(item.emoji))
 			}
