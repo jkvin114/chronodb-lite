@@ -128,7 +128,8 @@ https://cdn.jsdelivr.net/npm/luxon@3.3.0/build/global/luxon.min.js
           <label for="nameinput" class="visually-hidden">Description</label>
           <input type="text" class="form-control" id="database-desc-input" placeholder="Description">
         </div>
-        <label for="upload-data" id="upload-data-btn" title="import from file"><img src="download.svg" style="transform: rotate(180deg);"></label>
+        <label for="upload-data" id="upload-data-btn" title="import from file" style="color: black;border: 1px solid rgb(170, 170, 170); border-radius: 4px;margin: 5px;">
+          <img src="download.svg" style="transform: rotate(180deg);">Create from Import</label>
         <input type="file"  id="upload-data" accept="application/json" name="upload-data" class="hidden">
         <br> <button class="btn btn-primary" id="submit-create-db">Create New</button>
          <!-- <button class="btn btn-primary" id="submit-upload-data">Import</button> -->
@@ -377,13 +378,18 @@ https://cdn.jsdelivr.net/npm/luxon@3.3.0/build/global/luxon.min.js
   <section id="section-trend" class="hidden section container">
     <div class="board-toolbar-section">
       <img src="home.svg" class="trend-groupby-btn invert-color active" data-val="none" title="all"> 
-      <img src="palette.png" class="trend-groupby-btn" data-val="color" title="group by color"> 
+      <img src="palette.png" class="trend-groupby-btn hide-on-local" data-val="color" title="group by color"> 
       <img src="tag.png" class="trend-groupby-btn hide-on-local" data-val="tag" title="group by tags"> 
 
     </div>
     <div id="trend-container">
       <div id="trend-chartdiv" style="width: 100%;height: 500px;"></div>
 
+    </div>
+    <div>
+      <p>
+          Trend graph utilizes <a href="https://en.wikipedia.org/wiki/Kernel_density_estimation"> Gaussian Kernel Density Estimator</a> to visualize importance and frequency of the events. The magnitude of a graph depends on how frequent did events happen and how important they are.
+      </p>
     </div>
     <div id="trend-loading">
 
@@ -490,7 +496,7 @@ https://cdn.jsdelivr.net/npm/luxon@3.3.0/build/global/luxon.min.js
           <div class="inputitem">
             <label for="nameinput" class="visually-hidden">Image from URL</label>
             <input type="text" class="form-control" id="image-url-input" placeholder="Image URL">
-          </div>
+          </div>  
           <div class="inputitem hide-on-local" >
             <input type="file"  id="input-image" class="form-control" accept="image/png,image/jpg,image/jpeg" name="img">
             <!-- <input class="form-control" type="file" id="formFile"> -->
@@ -499,8 +505,8 @@ https://cdn.jsdelivr.net/npm/luxon@3.3.0/build/global/luxon.min.js
   
         
         <div class="row input-container">
-          <div id="tagarea-container hide-on-local" class="col-12 col-md-4">
-            <div id="tagarea ">
+          <div id="tagarea-container" class="col-12 col-md-4 hide-on-local">
+            <div id="tagarea">
               <!-- <div class="tag-selection selected"><img src="check.png">tag1</div>
               <div class="tag-selection"><img src="check.png">tag2</div>
               <div class="tag-selection selected"><img src="check.png">tag3</div> -->
@@ -535,8 +541,19 @@ https://cdn.jsdelivr.net/npm/luxon@3.3.0/build/global/luxon.min.js
   <div id="shadow" class="hidden"></div>
   <div id="shadow-post" class="hidden"></div>
 </body>
+<footer  >
+  <div class="container">
+
+    <p class="text-center text-muted">
+      <a href="https://github.com/jkvin114/chronodb">ChronoDB</a> is a timeline database maker, offering a variety of chronological data visualization options.<br>
+      <b class="show-on-local">This site is <a href="https://github.com/jkvin114/chronodb-lite">ChronoDB-Offline</a>, which is a serverless demonstration version of ChronoDB leveraging browser storage.
+      </b><br>
+      Created by Yejoon Jung<br>
+      jkvin114@gmail.com<br>
+  </p>
+  </div>
+</footer>
 <script src="js/util.js"></script>
-<script src="example/database_mcu.js"></script>
 <script src="js/localDatabase.js"></script>
 <script src="js/ajax.js"></script>
 <script src="js/index.js"></script>

@@ -30,7 +30,7 @@ async function Gallery() {
 	window.scrollTo(0, 0)
 	let html=""
 	for (const item of DB.data) {
-        if(item.thumbnail!=null){
+        if(item.thumbnail!=null && !isEmpty(item.thumbnail)){
             html+=`<a class=gallery-item data-src='${getImgSrc(item.thumbnail)}' data-name='${item.eventname}'><img  src="${getImgSrc(item.thumbnail)}"></a>`
         }
     }

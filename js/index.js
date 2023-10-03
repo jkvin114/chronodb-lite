@@ -136,7 +136,7 @@ function openEdit(id) {
 	$("#pickemoji").html('<img src="smile.svg">')
 	$("#pickemoji").data("emoji", null)
 	$("#preview-emoji").html("")
-
+	$("#image-url-input").val("")
 	if (id !== undefined) {
 		DB.currentEditingEvent=id
 		$("#editwindow h2").html("Edit Event")
@@ -166,7 +166,9 @@ function openEdit(id) {
 		}
 		console.log(data.eventdesc)
 		if (data.eventdesc) {
-			quill.setContents(data.eventdesc)
+			let desc=data.eventdesc
+			if(typeof desc === "string") desc = JSON.parse(desc)
+			quill.setContents(desc)
 		}
 		if (data.thumbnail) {
 			if(isImageRemote(data.thumbnail)) {
@@ -310,13 +312,13 @@ async function createEvent(id) {
 	formdata.append("isPeriod", event.isPeriod)
 	formdata.append("emojiThumbnail", event.emojiThumbnail)
 	formdata.append("tags", "")
-
+	let img=id?DB.datamap.get(id).thumbnail:""
+	if($("#image-url-input").val())
+		img = $("#image-url-input").val()
+	
 	if (!Database.IsLocal) {
 		const image = $("#input-image")[0].files[0]
 		// console.log(image)
-		let img=DB.datamap.get(id).thumbnail
-		if($("#image-url-input").val())
-			img = $("#image-url-input").val()
 
 		if (image) formdata.append("img", image)
 		else if (img) {
@@ -324,16 +326,14 @@ async function createEvent(id) {
 		}
 	}
 	else{
-		let img=id?DB.datamap.get(id).thumbnail:""
-		if($("#image-url-input").val())
-			img = $("#image-url-input").val()
+		
 		if (img) {
 			// console.log(img)/
 			event.thumbnail=img
 			formdata.append("thumbnail",img)
 		}
 	}
-
+	console.log(event)
 	//create event
 	if (!id) {
 		DatabaseStub.createEventRequest(formdata, event)
@@ -346,11 +346,13 @@ async function createEvent(id) {
 function drawTags() {
 	let html = ""
 	for (const tag of DB.tags.values()) {
-		html += `<div class="tag-selection tag-selection-editable" data-id=${tag.counter} id="eventtag_${tag.counter}" data-color=${tag.color} style="background-color:${
+		html += 
+		`<div class="tag-selection tag-selection-editable" data-id=${tag.counter} id="eventtag_${tag.counter}" data-color=${tag.color} style="background-color:${
 			COLORS_LIGHT[tag.color]
 		};">
         <img src="check.png">${tag.name}</div>`
 	}
+	
 	$("#tagarea").html(html)
 	$(".tag-selection-editable").click(function () {
 		if (!$(this).data("id") || !$(this).data("color")) return

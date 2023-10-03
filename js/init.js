@@ -5,6 +5,7 @@ function setToOffline(){
 
 	$(".hide-on-local").remove()
 	document.title="ChronoDB Offline"
+	$(".show-on-local").removeClass("show-on-local")
 }
 
 $("document").ready(function () {
@@ -146,6 +147,7 @@ $("document").ready(function () {
 	$(function () {
 		$('input[name="date"]').daterangepicker(
 			{
+				"parentEl": "#editwindow",
 				opens: "left",
 				showDropdowns: true,
 				minDate: "0000-01-01",
@@ -153,6 +155,8 @@ $("document").ready(function () {
 				autoUpdateInput: false,
 				locale: {
 					cancelLabel: "Clear",
+					format: 'YYYY-MM-DD'
+					  
 				},
 				singleDatePicker: true,
 			},

@@ -12,7 +12,7 @@ function getBlogPost(item,index)
 		date+=" ~ "+item.eventend.slice(0,10)
 	}
 
-	return `      
+	return `
 	<div class="blog-post">
 		<div class="blog-cover" style="background:linear-gradient(to bottom,${COLORS_DARK[item.color]},${
 			COLORS_MID[item.color]
@@ -43,11 +43,12 @@ function populatePostContent(item,index){
 		return
 	}
 	if(!isEmpty(item.desctext) && isEmpty(item.eventdesc)){
-		document.getElementById("blog-post-"+index).innerHTML=`<p style="padding:10px;">${item.desctext}</p>`
 		console.log(item.desctext)
+		let img=""
 		if(item.thumbnail){
-			$(`#blog-post-${index}`).prepend(`<img class='blog-img' src="${getImgSrc(item.thumbnail)}" data-src="${getImgSrc(item.thumbnail)}">`)
+			img=(`<img class='blog-img' src="${getImgSrc(item.thumbnail)}" data-src="${getImgSrc(item.thumbnail)}">`)
 		}
+		document.getElementById("blog-post-"+index).innerHTML=img+`<p style="padding:10px;">${item.desctext}</p>`
 	}
 	else{
 		const blogquill = new Quill(document.getElementById("blog-post-"+index), {
@@ -57,7 +58,9 @@ function populatePostContent(item,index){
 				toolbar: false,
 			},
 		})
-		blogquill.setContents(item.eventdesc)
+		let desc=item.eventdesc
+		if(typeof desc === "string") desc=JSON.parse(desc)
+		blogquill.setContents(desc)
 		blogquill.enable(false);
 		if(item.thumbnail){
 			$(`#blog-post-${index} .ql-editor`).prepend(`<img class='blog-img' src="${getImgSrc(item.thumbnail)}" data-src="${getImgSrc(item.thumbnail)}">`)

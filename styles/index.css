@@ -320,6 +320,7 @@ border-bottom: 1px solid #bebebe;
     align-items: center;
     flex-wrap: wrap;
 }
+
 #album-loading > div{
     min-width: 150px;
     width: clamp(150px,25vw,250px);
@@ -349,6 +350,21 @@ border-bottom: 1px solid #bebebe;
 /* gallery==================================== */
 .gallery-item{
     cursor: pointer;
+}
+#gallery-container{
+    transition: all 0.5s;
+}
+
+@media (max-width: 800px) {
+    #gallery-container .gallery-item{
+        width: 100px;
+        height: 100px;
+        overflow: hidden;
+    }
+    #gallery-container .gallery-item img{
+        width: 100px;
+        height: 100px;
+    }
 }
 #imageview{
     position: fixed;
@@ -420,7 +436,7 @@ border-bottom: 1px solid #bebebe;
     margin: 2vw;
 }
 .inputitem{
-    max-width: 300px;
+    width: 250px;
     margin: 10px;
     display: inline-block;
     margin-right: 20px;
@@ -642,7 +658,7 @@ emoji-picker{
 }
 .album-item .card-img-top{
     width: 100%;
-    height: clamp(100px,17vw,170px);;
+    height: clamp(140px,17vw,170px);;
     min-height: 100px;
 }
 .album-item .card-img-top.noimage{
@@ -656,8 +672,8 @@ emoji-picker{
 
 .album-item .card-thumbnail{
     width: 100%;
-    height: clamp(100px,17vw,170px);;
-    min-height: 100px;
+    height: clamp(140px,17vw,170px);;
+    min-height: 140px;
     object-fit:cover;
     background-color: transparent;
 }
@@ -728,6 +744,13 @@ emoji-picker{
     background: white;
 
     min-height: 200px;
+    display: flex;
+    flex-wrap: wrap;
+}
+@media (max-width: 800px) {
+    .blog-content{
+        flex-direction: column;
+    }
 }
 .blog-content.ql-container.ql-snow{
    border: none;
@@ -865,7 +888,7 @@ emoji-picker{
     display: none;
 }
 .board-area-content{
-    padding: 15px;
+    padding: 2px;
     display: flex;
     flex-wrap: wrap;
     justify-content: flex-start;
@@ -883,7 +906,7 @@ emoji-picker{
     box-shadow:rgba(85, 85, 85,0.5) 0px 0px 3px 1px;
     border-radius: 5px;
     padding: 5px;
-    margin: 7px;
+    margin: 8px;
     padding-bottom: 2px;
     padding-right: 2px;
     cursor: pointer;
@@ -894,6 +917,7 @@ emoji-picker{
 @media (max-width: 800px) {
     .board-item{
         width: 150px;
+        margin: 3px;
     }
 }
 .board-item .board-item-content{
@@ -992,4 +1016,12 @@ cursor: pointer;}
     display: flex;
     justify-content: center;
     align-items: center;
+}
+footer{
+    box-shadow: 0 50vh 0 50vh rgba(0, 0, 0, .1);
+    background-color: rgba(0, 0, 0, .1);
+    padding: 30px;
+}
+.show-on-local{
+    display: none;
 }
