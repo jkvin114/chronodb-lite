@@ -12,6 +12,10 @@ function getBlogPost(item,index)
 		date+=" ~ "+item.eventend.slice(0,10)
 	}
 
+	const youtubePlay=`
+		<img src="music.svg" id="play-yt-bgm-${index}" class="play-yt-bgm btn" data-url="${item.videoId}" title="play BGM">
+	`
+
 	return `
 	<div class="blog-post">
 		<div class="blog-cover" style="background:linear-gradient(to bottom,${COLORS_DARK[item.color]},${
@@ -20,6 +24,7 @@ function getBlogPost(item,index)
 			${emoji}
 			<b class="blog-cover-stars">${stars}</b>
 		</div>
+		
 		<div class="blog-header">
 			<h1>${item.eventname}</h1>
 			<b class="blog-header-date">${date}</b><br>
@@ -30,6 +35,7 @@ function getBlogPost(item,index)
 				<img src="trash.svg" class='blog-delete' data-id=${item.counter} data-name=${item.eventname} title="delete event">
 			</div>
 		</div>
+		${item.videoId?youtubePlay:""}
 		<div id="blog-post-${index}" class="blog-content">
 
 		</div>
@@ -37,6 +43,15 @@ function getBlogPost(item,index)
 }
 
 function populatePostContent(item,index){
+	
+	if(item.videoId){
+
+		$("#play-yt-bgm-"+index).click(function(){
+			$(".yt-player-container").html(`<div id="yt-player"></div>`)
+			setYTVideo("yt-player",$(this).data("url"),0)
+			$("#yt-widget").removeClass("hidden")
+		})
+	}
 	if(isEmpty(item.desctext) && !item.thumbnail) {
 		
 		document.getElementById("blog-post-"+index).innerHTML='<p style="padding:10px;">[No Content]</p>'

@@ -714,6 +714,7 @@ emoji-picker{
 /* Blog======================================== */
 .blog-post{
     margin-bottom: 30px;
+    background: white;
 }
 .blog-post .ql-editor{
     width: 100%;
@@ -1024,4 +1025,46 @@ footer{
 }
 .show-on-local{
     display: none;
+}
+.yt-player-container{
+    
+    overflow: hidden;
+    display: flex;
+    align-items: flex-end;
+    
+}
+.yt-player-container.small{
+    width: 60px;
+    height: 60px;
+}
+#yt-widget{
+    position: fixed;
+    left: 20px;
+    bottom: 20px;
+    z-index: 10003;
+}
+#yt-widget > img{
+    background: white;
+    width: 25px;
+    height: 25px;
+    cursor: pointer;
+    margin: -1px;
+}
+#yt-widget > img:hover{
+    
+    background: gray;
+}
+#yt-search{
+    cursor: pointer;
+}
+#yt-thumbnail > img{
+    width: 250px;
+}
+.play-yt-bgm{
+    background-color: rgb(194, 31, 194);
+    border-radius: 5px;
+    margin: 10px;
+}
+.play-yt-bgm:hover{
+    transform: scale(1.1);
 }

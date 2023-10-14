@@ -107,7 +107,7 @@ https://cdn.jsdelivr.net/npm/luxon@3.3.0/build/global/luxon.min.js
           <small>Donec id elit non mi porta.</small>
         </a> -->
       </div>
-
+      <!-- <iframe width="560" height="315" id="player" src="https://www.youtube.com/embed/6ZUIwj3FgUY?si=J0-XijTUPlptlmk3" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe> -->
       <div id="database-loading" class="list-group">
         <div class=" w-100 database-loading-item loading-item">
         </div>
@@ -410,6 +410,15 @@ https://cdn.jsdelivr.net/npm/luxon@3.3.0/build/global/luxon.min.js
 
   </div>
 </div>
+<div id="yt-widget" class="hidden">
+  <img id="yt-widget-close" src="x.svg">
+  <img id="yt-widget-maximize" src="maximize.svg" class="hidden">
+  <img id="yt-widget-minimize" src="minimize.svg">
+  <div class="yt-player-container">
+	  <div id="yt-player"></div>
+	</div>
+</div>
+
 <div id="tagwindow" class="hidden">
   <b id="tag-close-btn">&times;</b>
   <h1>Edit Tags</h1>
@@ -501,8 +510,23 @@ https://cdn.jsdelivr.net/npm/luxon@3.3.0/build/global/luxon.min.js
             <input type="file"  id="input-image" class="form-control" accept="image/png,image/jpg,image/jpeg" name="img">
             <!-- <input class="form-control" type="file" id="formFile"> -->
           </div>
+         
+          
         </div>
-  
+        <div id="yt-search-area">
+          <div class="inputitem">
+
+            <div class="input-group flex-nowrap ">
+              <span class="input-group-text" id="addon-wrapping"><img src="search.svg" width="20px" id="yt-search"></span>
+              <input type="text" class="form-control" id="bgm-url-input" placeholder="BGM URL(Youtube)">
+            </div>
+          </div>
+          <br>
+          <i id="yt-title"></i><br>
+          <div id="yt-thumbnail">
+            <div id="yt-player-editor"></div>
+          </div>
+        </div>
         
         <div class="row input-container">
           <div id="tagarea-container" class="col-12 col-md-4 hide-on-local">
@@ -553,6 +577,8 @@ https://cdn.jsdelivr.net/npm/luxon@3.3.0/build/global/luxon.min.js
   </p>
   </div>
 </footer>
+<script src="js/youtube.js"></script>
+<script src="https://www.youtube.com/iframe_api"></script>
 <script src="js/util.js"></script>
 <script src="js/localDatabase.js"></script>
 <script src="js/ajax.js"></script>
@@ -561,6 +587,7 @@ https://cdn.jsdelivr.net/npm/luxon@3.3.0/build/global/luxon.min.js
 <script src="js/emoji.js"></script>
 <script src="js/colors.js"></script>
 <script src="js/init.js"></script>
+<script src="js/write.js"></script>
 
 <script src="js/table.js"></script>
 <script src="js/timeline.js"></script>

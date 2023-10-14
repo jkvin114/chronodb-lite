@@ -1,42 +1,40 @@
 console.log(hexId(10))
 
-
-function setToOffline(){
-
+function setToOffline() {
 	$(".hide-on-local").remove()
-	document.title="ChronoDB Offline"
+	document.title = "ChronoDB Offline"
 	$(".show-on-local").removeClass("show-on-local")
 }
+
 
 $("document").ready(function () {
 	let query = new URLSearchParams(window.location.search)
 	let id = query.get("db")
-	
 
-	if(Database.IsLocal){
+	if (Database.IsLocal) {
 		setToOffline()
 	}
 	if (!id) {
-        $(".nav-item").hide()
+		$(".nav-item").hide()
 		DatabaseStub.dbList()
-		$("#upload-data").change(function(){
+		$("#upload-data").change(function () {
 			try {
-				let files  = document.getElementById('upload-data').files
+				let files = document.getElementById("upload-data").files
 				if (!files.length) {
-					return;
+					return
 				}
-				let file = files[0];
-				let reader = new FileReader();
-				const self = this;
+				let file = files[0]
+				let reader = new FileReader()
+				const self = this
 				reader.onload = (event) => {
 					uploadData(event.target.result)
-				};
-				reader.readAsText(file);
+				}
+				reader.readAsText(file)
 			} catch (err) {
-				console.error(err);
+				console.error(err)
 			}
 		})
-		$("#submit-create-db").click(function(){
+		$("#submit-create-db").click(function () {
 			createDatabase()
 		})
 		// $("#upload-data").change(function(evt) {
@@ -60,11 +58,10 @@ $("document").ready(function () {
 
 		addExampleData()
 		return
+	} else {
+		$(".nav-item").show()
 	}
-	else{
-        $(".nav-item").show()
-    }
-    $(".view-nav").click(function(){
+	$(".view-nav").click(function () {
 		$(".view-nav .nav-link").removeClass("active")
 		$(this).children(".nav-link").addClass("active")
 		changeView($(this).data("view"))
@@ -76,7 +73,7 @@ $("document").ready(function () {
 	if (!DB.id) DB.id = 1
 
 	let view = query.get("view")
-	if(!view) view="table"
+	if (!view) view = "table"
 	changeView(view)
 	quill = new Quill(document.getElementById("editor"), {
 		theme: "snow",
@@ -89,10 +86,9 @@ $("document").ready(function () {
 
 	$("#post-close-btn").click(closePost)
 	$("#edit-close-btn").click(closeEdit)
-	$("#tag-close-btn").click(function(){
+	$("#tag-close-btn").click(function () {
 		$("#tagwindow").addClass("hidden")
 		$("#shadow-post").addClass("hidden")
-
 	})
 
 	document.querySelector("emoji-picker").addEventListener("emoji-click", (event) => {
@@ -128,10 +124,8 @@ $("document").ready(function () {
 	$("#shadow-post").click(function (e) {
 		closePost()
 		$("#tagwindow").addClass("hidden")
-
 	})
 	initColorSelection()
-
 
 	//  $("#tagarea").html(tags)
 
@@ -147,7 +141,7 @@ $("document").ready(function () {
 	$(function () {
 		$('input[name="date"]').daterangepicker(
 			{
-				"parentEl": "#editwindow",
+				parentEl: "#editwindow",
 				opens: "left",
 				showDropdowns: true,
 				minDate: "0000-01-01",
@@ -155,8 +149,7 @@ $("document").ready(function () {
 				autoUpdateInput: false,
 				locale: {
 					cancelLabel: "Clear",
-					format: 'YYYY-MM-DD'
-					  
+					format: "YYYY-MM-DD",
 				},
 				singleDatePicker: true,
 			},
@@ -172,31 +165,34 @@ $("document").ready(function () {
 		$(this).val("")
 	})
 
-	$(".groupby-btn").click(function(){
-		if(DB.view!==VIEW.Board) return
+	$(".groupby-btn").click(function () {
+		if (DB.view !== VIEW.Board) return
 		$(".groupby-btn").removeClass("active")
 		$(this).addClass("active")
-		BoardState.GroupBy=$(this).data("val")
+		BoardState.GroupBy = $(this).data("val")
 		Board()
 	})
-	$(".orderby-btn").click(function(){
-		if(DB.view!==VIEW.Board) return
+	$(".orderby-btn").click(function () {
+		if (DB.view !== VIEW.Board) return
 		$(".orderby-btn").removeClass("active")
 		$(this).addClass("active")
-		BoardState.OrderBy=Number($(this).data("val"))
+		BoardState.OrderBy = Number($(this).data("val"))
 		Board()
 	})
-	$(".trend-groupby-btn").click(function(){
-		if(DB.view!==VIEW.Trend) return
+	$(".trend-groupby-btn").click(function () {
+		if (DB.view !== VIEW.Trend) return
 		$(".trend-groupby-btn").removeClass("active")
 		$(this).addClass("active")
-		TrendState.GroupBy=$(this).data("val")
+		TrendState.GroupBy = $(this).data("val")
 		TrendView()
-		
 	})
 
+	$("#yt-widget-maximize").click(maximizeYTWidget)
+	$("#yt-widget-minimize").click(minimizeYTWidget)
+	$("#yt-widget-close").click(removeYTWidget)
+	$("#yt-search").click(checkYTVideo)
 	const inputImage = document.getElementById("input-image")
-	if(inputImage)
+	if (inputImage)
 		inputImage.addEventListener("change", (e) => {
 			let input = e.target
 			if (input.files && input.files[0]) {
@@ -217,37 +213,31 @@ $("document").ready(function () {
 		let input = e.target.value
 		if (input) {
 			$("#thumbnail").html("<img src='" + input + "'>")
-		}
-		else{
+		} else {
 			$("#thumbnail").html("")
 		}
 	})
-
-	
 })
 
-async function addExampleData(){
-	if(Database.IsLocal){
-		
-		
-		const data = await (await fetch("https://raw.githubusercontent.com/jkvin114/chronodb/main/public/example/database_mcu.json")).json()
+async function addExampleData() {
+	if (Database.IsLocal) {
+		const data = await (
+			await fetch("https://raw.githubusercontent.com/jkvin114/chronodb/main/public/example/database_mcu.json")
+		).json()
 		let hasexample = await DatabaseStub.hasExampleDB()
 		console.log(hasexample)
-		if(!hasexample)
-			uploadData(JSON.stringify(data))
-		}
+		if (!hasexample) uploadData(JSON.stringify(data))
+	}
 }
 
-function initColorSelection(){
-
+function initColorSelection() {
 	let str = "<div data-color='rand' class='dropdown-item color-item'><img src='shuffle.svg'></div>"
-	let tagstr="<div data-color='rand' class='tag-dropdown-item color-item'><img src='shuffle.svg'></div>"
+	let tagstr = "<div data-color='rand' class='tag-dropdown-item color-item'><img src='shuffle.svg'></div>"
 	let tags = ""
 	for (let i = 0; i < COLORS_LIGHT.length; ++i) {
 		str += `<div data-color=${i} class="dropdown-item color-item"><span class="color-selection-span" style="background:${COLORS_LIGHT[i]};"></span></div>`
 		// tags+=`<div class="tag-selection selected" data-id=1 data-color=${i} style="background:${COLORS_LIGHT[i]};"><img src="check.png">tag-${i}</div>`
 		tagstr += `<div data-color=${i} class="tag-dropdown-item color-item"><span class="color-selection-span" style="background:${COLORS_MID[i]};"></span></div>`
-
 	}
 	$("#color-selection").html(str)
 	$("#tag-color-selection").html(tagstr)
@@ -269,5 +259,4 @@ function initColorSelection(){
 		$("#tagnameinput").css("background", COLORS_MID[Number(col)])
 		$("#tag-color-selection-current").css("background", COLORS_MID[Number(col)])
 	})
-
 }

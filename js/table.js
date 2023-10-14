@@ -8,7 +8,9 @@ async function Table() {
     $("#table-loading").show()
 	await DatabaseStub.loadData()
 	setTimeout(()=>$("#table-loading").hide(),300)
-    
+    let query = new URLSearchParams(window.location.search)
+	let page = query.get("page")
+
 	window.scrollTo(0, 0)
 	let tabledata = []
 	for (const item of DB.data) {
@@ -28,6 +30,7 @@ async function Table() {
 	}
 
 	let table = new Tabulator("#table-container", {
+		paginationInitialPage:page?page:1,
 		data: tabledata, //load row data from array
 		layout: "fitColumns", //fit columns to width of table
 		responsiveLayout: "hide", //hide columns that don't fit on the table
@@ -68,6 +71,11 @@ async function Table() {
 			{ title: "Tags", field: "tags", hozAlign: "center", formatter: "html" },
 		],
 	})
+	table.on("pageLoaded", function(pageno){
+		const url = new URL(window.location)
+		url.searchParams.set("page", pageno)
+		window.history.pushState(null, "", url.toString())
+	});
 	table.on("cellClick", function(e, cell){
         //e - the click event object
         //cell - cell componen
